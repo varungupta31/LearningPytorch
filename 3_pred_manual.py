@@ -1,46 +1,50 @@
 """
 Prediction --> Manual
 Grad Compute --> Pytorch
-Loss Compute --> Manual
-Param Update --> Manual
+Loss Compute --> Pytorch
+Param Update --> Pytorch
 """
-import numpy as np
+
+"""
+1. Designing the Model --> Input and Output size, Forward Pass.
+2. Construct the loss and optimizer.
+3. Training Loop.
+    - Forward pass --> Compute the prediction
+    - Backward Pass --> Gradients
+    - Update weights
+"""
+
 import torch
+import torch.nn as nn
+
 
 X = torch.tensor([1,2,3,4], dtype=torch.float32)
 Y = torch.tensor([2,4,6,8], dtype=torch.float32)
 
 w = torch.tensor(0.0, dtype=torch.float32, requires_grad=True)
 
+learning_rate = 0.01
+n_iters = 50
 # Prediction
 
 def forward(x):
     return w*x
 
-# Loss (Mean Squared Errror)
-def loss(y, y_predicted):
-    return ((y_predicted-y)**2).mean()
-
+loss = nn.MSELoss()
+optmizer = torch.optim.SGD([w],lr=learning_rate)
 
 print(f"Before Training: f(5) = {forward(5):.3f}")
 
 # Training
-lr = 0.01
-n_iter = 50
-
-for epoch in range(n_iter):
+for epoch in range(n_iters):
     # prediction --> Forward pass
     y_pred = forward(X)
     # loss
     l = loss(Y, y_pred)
     # grad = backward pass
     l.backward()
-    # update weights
-    with torch.no_grad():
-        w -= lr*w.grad
-    
-    #Important to add, avoids accumulation of gradients.
-    w.grad.zero_()
+    optmizer.step()    
+    optmizer.zero_grad()
 
 
     if epoch % 1 == 0:

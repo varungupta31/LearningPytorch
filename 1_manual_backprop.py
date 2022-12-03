@@ -6,10 +6,9 @@ Param Update --> Manual
 """
 import numpy as np
 
+#Creating numpy arrays
 X = np.array([1,2,3,4], dtype=np.float32)
 Y = np.array([2,4,6,8], dtype=np.float32)
-# X = np.array([1,4,16,48], dtype=np.float32)
-# Y = np.array([2,8,32,96], dtype=np.float32)
 
 w = 0.0
 
@@ -24,6 +23,7 @@ def loss(y, y_predicted):
 
 # Gradients
 def gradient(x, y, y_predicted):
+    #manually computed (differential)
     return np.dot(2*x, y_predicted-y).mean()
 
 
@@ -40,7 +40,7 @@ for epoch in range(n_iter):
     l = loss(Y, y_pred)
     # grad
     dw = gradient(X, Y, y_pred)
-    # update weights
+    # update weights --> Simple weight update, w = w-(dw*learning_rate)
     w -= lr*dw
 
     if epoch % 1 == 0:
